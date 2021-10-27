@@ -2,6 +2,7 @@ from typing import Optional, Tuple
 import os
 import librosa as lr
 import numpy as np
+import click
 
 from jina import Document, DocumentArray, Executor, Flow, requests
 
@@ -68,8 +69,13 @@ def check_query(resp):
 
 def index():
     f = (Flow()
-         .add(name='segmenter', uses=TimeSegmenter, uses_with={'chunk_duration': 0.5, 'chunk_strip': 0.1})
-         .add(name='encoder', uses='jinahub+docker://AudioCLIPEncoder/v0.4', uses_with={'traversal_paths': ['c', ]}, volumes=f'{str(model_dir)}:/workdir/assets')
+         .add(name='segmenter',
+              uses=TimeSegmenter,
+              uses_with={'chunk_duration': 0.5, 'chunk_strip': 0.1})
+         .add(name='encoder',
+              uses='jinahub+docker://AudioCLIPEncoder/v0.4',
+              uses_with={'traversal_paths': ['c', ]},
+              volumes=f'{str(model_dir)}:/workdir/assets')
          .add(name='indexer', uses='jinahub://SimpleIndexer/v0.7')
          )
 
@@ -95,8 +101,18 @@ def query():
                on_done=check_query)
 
 
+@click.command()
+@click.option('--task', '-t')
+def main(task):
+    if task == 'index':
+        index()
+    elif task == 'query':
+        query()
+    else:
+        return
+
+
 if __name__ == '__main__':
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     model_dir = os.path.join(cur_dir, "models")
-    # index()
-    query()
+    main()
