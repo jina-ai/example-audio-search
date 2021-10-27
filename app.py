@@ -71,7 +71,7 @@ def index():
     f = (Flow()
          .add(name='segmenter',
               uses=TimeSegmenter,
-              uses_with={'chunk_duration': 0.5, 'chunk_strip': 0.1})
+              uses_with={'chunk_duration': 0.5, 'chunk_strip': 0.1})  # split into chunks of 0.5s with 0.4s overlaps
          .add(name='encoder',
               uses='jinahub+docker://AudioCLIPEncoder/v0.4',
               uses_with={'traversal_paths': ['c', ]},
