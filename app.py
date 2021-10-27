@@ -63,9 +63,9 @@ def check_index(resp):
 
 def check_query(resp):
     for d in resp.docs:
-        print(f'{d.id}: {d.tags}')
         for m in d.matches:
-            print(f'{m.id[:10]}: {m.scores}, {m.tags}')
+            print(f'{m.id[:10]}: {m.scores["cosine"].value:.4f},'
+                  f' begin: {m.tags["beg_in_ms"]}, end: {m.tags["end_in_ms"]}')
 
 def index():
     f = (Flow()
