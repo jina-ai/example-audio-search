@@ -28,6 +28,8 @@ def index():
     f = Flow.load_config('flow.yml')
     with f:
         f.post(on='/index', inputs=get_index_doc, on_done=check_index)
+        # make a block and switch to url
+        # lead the user to use debugging tool to search
 
 
 def query():
