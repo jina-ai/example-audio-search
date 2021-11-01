@@ -6,10 +6,10 @@ from jina import Document, DocumentArray, Executor, requests
 
 
 class AudioSegmenter(Executor):
-    def __init__(self, chunk_duration: float = 1, chunk_stride: float = 1, *args, **kwargs):
+    def __init__(self, window_size: float = 1, stride: float = 1, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.chunk_duration = chunk_duration  # seconds
-        self.stride = chunk_stride
+        self.window_size = window_size  # seconds
+        self.stride = stride
 
     @requests(on=['/index', '/search'])
     def segment(self, docs: DocumentArray, **kwargs):
@@ -20,7 +20,7 @@ class AudioSegmenter(Executor):
                 print(f'failed to load {doc.uri}, {e}')
                 continue
             doc.tags['sample_rate'] = sample_rate
-            chunk_size = int(self.chunk_duration * sample_rate)
+            chunk_size = int(self.window_size * sample_rate)
             stride_size = int(self.stride * sample_rate)
             num_chunks = max(1, int((doc.blob.shape[0] - chunk_size) / stride_size))
             for chunk_id in range(num_chunks):

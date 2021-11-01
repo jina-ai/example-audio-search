@@ -1,55 +1,17 @@
-import glob
-import os
-import click
-
-from jina import Document, Flow
+from jina import DocumentArray, Flow
+from jina.types.document.generators import from_files
 
 
-def check_index(resp):
-    for d in resp.docs:
-        print(f'{d.uri}: {len(d.chunks)}')
-        for c in d.chunks:
-            print(f'+- {c.embedding.shape}')
+def main():
+    docs = DocumentArray(from_files('toy-data/*.mp3'))
 
-
-def check_query(resp):
-    for d in resp.docs:
-        print(f'{d.uri}, {len(d.chunks)}')
-        for m in d.matches:
-            print(f'+- {m.id}: {m.scores["cosine"].value:.4f}, {m.tags}')
-
-
-def get_index_doc():
-    for fn in glob.glob('toy-data/*.mp3'):
-        yield Document(id=fn, uri=fn)
-
-
-def index():
     f = Flow.load_config('flow.yml')
     with f:
-        f.post(on='/index', inputs=get_index_doc, on_done=check_index)
-        # make a block and switch to url
-        # lead the user to use debugging tool to search
-
-
-def query():
-    f = Flow.load_config('flow.yml')
-    with f:
-        f.post(on='/search', inputs=get_index_doc, on_done=check_query)
-
-
-@click.command()
-@click.option('--task', '-t')
-def main(task):
-    if task == 'index':
-        index()
-    elif task == 'query':
-        query()
-    else:
-        return
+        f.post(on='/index', inputs=docs)
+        f.protocol = 'http'
+        f.cors = True
+        f.block()
 
 
 if __name__ == '__main__':
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(cur_dir, "models")
     main()

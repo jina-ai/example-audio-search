@@ -1,8 +1,13 @@
 jtype: Flow
 version: '1'
+with:
+  port_expose: 45678
 executors:
   - name: 'segmenter'
     uses: AudioSegmenter
+    uses_with:
+      window_size: 4
+      stride: 2
     py_modules:
       - executors.py
   - name: 'encoder'
@@ -10,7 +15,7 @@ executors:
     uses_with:
       traversal_paths: ['c', ]
       load_input_from: 'waveform'
-      min_duration: 1
+      min_duration: 4
     volumes:
       - './models:/workspace/models'
   - name: 'indexer'
