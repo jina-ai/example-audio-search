@@ -5,7 +5,7 @@ from collections import defaultdict
 from jina import Document, DocumentArray, Executor, requests
 
 
-class TimeSegmenter(Executor):
+class AudioSegmenter(Executor):
     def __init__(self, chunk_duration: float = 1, chunk_stride: float = 1, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.chunk_duration = chunk_duration  # seconds

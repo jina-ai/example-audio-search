@@ -2,7 +2,7 @@ jtype: Flow
 version: '1'
 executors:
   - name: 'segmenter'
-    uses: TimeSegmenter
+    uses: AudioSegmenter
     py_modules:
       - executors.py
   - name: 'encoder'
