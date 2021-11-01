@@ -3,7 +3,6 @@ import os
 import click
 
 from jina import Document, Flow
-from executors import TimeSegmenter, MyRanker
 
 
 def check_index(resp):
@@ -26,32 +25,13 @@ def get_index_doc():
 
 
 def index():
-    f = (Flow()
-         .add(name='segmenter', uses=TimeSegmenter)
-         .add(name='encoder',
-              uses='jinahub+docker://VGGishAudioEncoder/v0.4',
-              uses_with={'traversal_paths': ('c', ), 'load_input_from': 'waveform', 'min_duration': 1},
-              volumes=['./models:/workspace/models'])
-         .add(name='indexer', uses='jinahub://SimpleIndexer/v0.7', install_requirements=True)
-         )
-
+    f = Flow.load_config('flow.yml')
     with f:
         f.post(on='/index', inputs=get_index_doc, on_done=check_index)
 
 
 def query():
-    f = (Flow()
-         .add(name='segmenter', uses=TimeSegmenter)
-         .add(name='encoder',
-              uses='jinahub+docker://VGGishAudioEncoder/v0.4',
-              uses_with={'traversal_paths': ('c', ), 'load_input_from': 'waveform', 'min_duration': 1},
-              volumes='./models:/workspace/models')
-         .add(name='indexer',
-              uses='jinahub://SimpleIndexer/v0.7',
-              uses_with={'match_args': {'limit': 5, 'traversal_rdarray': ('c', ), 'traversal_ldarray': ('c',)}})
-         .add(uses=MyRanker)
-         )
-
+    f = Flow.load_config('flow.yml')
     with f:
         f.post(on='/search', inputs=get_index_doc, on_done=check_query)
 
