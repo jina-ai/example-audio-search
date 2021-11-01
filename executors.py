@@ -51,7 +51,7 @@ class TimeSegmenter(Executor):
                 doc.chunks.append(c)
 
 
-class SimpleRanker(Executor):
+class MyRanker(Executor):
     """
     SimpleRanker aggregates the score of matches of chunks, where these matches are just
     chunks of some larger document as well, to the score of the parent document of the

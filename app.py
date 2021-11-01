@@ -3,7 +3,7 @@ import os
 import click
 
 from jina import Document, Flow
-from executors import TimeSegmenter, SimpleRanker
+from executors import TimeSegmenter, MyRanker
 
 
 def check_index(resp):
@@ -49,7 +49,7 @@ def query():
          .add(name='indexer',
               uses='jinahub://SimpleIndexer/v0.7',
               uses_with={'match_args': {'limit': 5, 'traversal_rdarray': ('c', ), 'traversal_ldarray': ('c',)}})
-         .add(uses=SimpleRanker)
+         .add(uses=MyRanker)
          )
 
     with f:
