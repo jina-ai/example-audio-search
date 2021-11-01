@@ -2,3 +2,6 @@
 .idea/
 models/
 workspace/
+data/
+toys
+__pycache__/
