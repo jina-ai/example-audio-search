@@ -11,20 +11,20 @@ executors:
     py_modules:
       - executors.py
   - name: 'encoder'
-    uses: 'jinahub+docker://VGGishAudioEncoder/v0.4'
+    uses: 'jinahub+docker://VGGishAudioEncoder/v0.5'
     uses_with:
-      traversal_paths: ['c', ]
+      traversal_paths: 'c'
       load_input_from: 'waveform'
       min_duration: 4
     volumes:
       - './models:/workspace/models'
   - name: 'indexer'
-    uses: 'jinahub://SimpleIndexer/v0.7'
+    uses: 'jinahub://SimpleIndexer/v0.11'
     uses_with:
       match_args:
         limit: 5
-        traversal_rdarray: ['c',]
-        traversal_ldarray: ['c',]
+        traversal_rdarray: 'c'
+        traversal_ldarray: 'c'
   - name: ranker
     uses: MyRanker
     py_modules:

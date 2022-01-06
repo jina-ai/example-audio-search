@@ -1,2 +1,3 @@
 librosa>=0.8.0
-jina~=2.2
+jina==2.6.4
+streamlit==1.3.1

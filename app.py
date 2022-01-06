@@ -1,5 +1,8 @@
 from jina import DocumentArray, Flow
 from jina.types.document.generators import from_files
+import os
+import sys
+import logging
 
 def check_query(resp):
     for d in resp.docs:
@@ -8,8 +11,19 @@ def check_query(resp):
             print(f'+- {m.uri}: {m.scores["cosine"].value:.6f}, {m.tags}')
 
 def main():
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    workspace = os.path.join(cur_dir, 'workspace')
+    logger = logging.getLogger('audio-search')
     docs = DocumentArray(from_files('toy-data/*.mp3'))
-
+    if os.path.exists(workspace):
+            logger.error(
+                f'\n +------------------------------------------------------------------------------------+ \
+                    \n |                                   🤖🤖🤖                                           | \
+                    \n | The directory {workspace} already exists. Please remove it before indexing again.  | \
+                    \n |                                   🤖🤖🤖                                           | \
+                    \n +------------------------------------------------------------------------------------+'
+            )
+            sys.exit(1)
     f = Flow.load_config('flow.yml')
     with f:
         f.post(on='/index', inputs=docs)
