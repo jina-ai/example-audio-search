@@ -26,7 +26,7 @@ def main():
             sys.exit(1)
     f = Flow.load_config('flow.yml')
     with f:
-        f.post(on='/index', inputs=docs)
+        f.post(on='/index', inputs=docs, show_progress=True)
         f.post(on='/search', inputs=docs, on_done=check_query)
         f.protocol = 'http'
         f.cors = True

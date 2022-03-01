@@ -2,8 +2,8 @@ import librosa as lr
 import numpy as np
 from collections import defaultdict
 
-from jina import Document, DocumentArray, Executor, requests
-
+from jina import Executor, requests
+from docarray import Document, DocumentArray
 
 class AudioSegmenter(Executor):
     def __init__(self, window_size: float = 1, stride: float = 1, *args, **kwargs):
@@ -43,10 +43,10 @@ class AudioSegmenter(Executor):
 class MyRanker(Executor):
     @requests(on='/search')
     def rank(self, docs: DocumentArray = None, **kwargs):
-        for doc in docs.traverse_flat('r'):
+        for doc in docs['@r']:
             parents_scores = defaultdict(list)
             parents_match = defaultdict(list)
-            for m in DocumentArray([doc]).traverse_flat('cm'):
+            for m in DocumentArray([doc])['@c,m']:
                 parents_scores[m.parent_id].append(m.scores['cosine'].value)
                 parents_match[m.parent_id].append(m)
             # Aggregate match scores for parent document and
