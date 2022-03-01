@@ -15,7 +15,7 @@ class AudioSegmenter(Executor):
     def segment(self, docs: DocumentArray, **kwargs):
         for idx, doc in enumerate(docs):
             try:
-                doc.blob, sample_rate = lr.load(doc.uri, sr=16000)
+                doc.tensor, sample_rate = lr.load(doc.uri, sr=16000)
             except RuntimeError as e:
                 print(f'failed to load {doc.uri}, {e}')
                 continue
@@ -26,10 +26,10 @@ class AudioSegmenter(Executor):
             for chunk_id in range(num_chunks):
                 beg = chunk_id * stride_size
                 end = beg + chunk_size
-                if beg > doc.blob.shape[0]:
+                if beg > doc.tensor.shape[0]:
                     break
                 c = Document(
-                    blob=doc.blob[beg:end],
+                    tensor=doc.tensor[beg:end],
                     offset=idx,
                     location=[beg, end],
                     tags=doc.tags,

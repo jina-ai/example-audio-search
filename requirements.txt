@@ -1,3 +1,4 @@
 librosa
+docarray
 jina==3.0.3
 streamlit
