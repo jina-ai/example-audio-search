@@ -1,5 +1,5 @@
-from jina import DocumentArray, Flow
-from jina.types.document.generators import from_files
+from jina import Flow
+from docarray import DocumentArray
 import os
 import sys
 import logging
@@ -14,7 +14,7 @@ def main():
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     workspace = os.path.join(cur_dir, 'workspace')
     logger = logging.getLogger('audio-search')
-    docs = DocumentArray(from_files('toy-data/*.mp3'))
+    docs = DocumentArray.from_files('toy-data/*.mp3')
     if os.path.exists(workspace):
             logger.error(
                 f'\n +------------------------------------------------------------------------------------+ \
@@ -28,7 +28,6 @@ def main():
     with f:
         f.post(on='/index', inputs=docs, show_progress=True)
         f.post(on='/search', inputs=docs, on_done=check_query)
-        f.protocol = 'http'
         f.cors = True
         f.block()
 

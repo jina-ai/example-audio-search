@@ -22,7 +22,7 @@ class AudioSegmenter(Executor):
             doc.tags['sample_rate'] = sample_rate
             chunk_size = int(self.window_size * sample_rate)
             stride_size = int(self.stride * sample_rate)
-            num_chunks = max(1, int((doc.blob.shape[0] - chunk_size) / stride_size))
+            num_chunks = max(1, int((doc.tensor.shape[0] - chunk_size) / stride_size))
             for chunk_id in range(num_chunks):
                 beg = chunk_id * stride_size
                 end = beg + chunk_size
@@ -64,5 +64,5 @@ class MyRanker(Executor):
                 new_match.tags['end_in_ms'] = match.tags['end_in_ms']
                 new_matches.append(new_match)
             # Sort the matches
+            new_matches.sort(key=lambda d: d.scores['cosine'].value)
             doc.matches = new_matches
-            doc.matches.sort(key=lambda d: d.scores['cosine'].value)

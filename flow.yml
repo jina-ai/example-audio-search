@@ -1,6 +1,7 @@
 jtype: Flow
 version: '1'
 with:
+  protocal: http
   port_expose: 45678
 executors:
   - name: 'segmenter'
@@ -11,7 +12,8 @@ executors:
     py_modules:
       - executors.py
   - name: 'encoder'
-    uses: 'jinahub+docker://VGGishAudioEncoder/v0.6'
+    uses: 'jinahub://VGGishAudioEncoder/v0.6'
+    install_requirements: True
     uses_with:
       traversal_paths: '@c'
       load_input_from: 'waveform'
@@ -25,6 +27,7 @@ executors:
         limit: 5
         traversal_right: '@c'
         traversal_left: '@c'
+    install_requirements: True
   - name: ranker
     uses: MyRanker
     py_modules:
