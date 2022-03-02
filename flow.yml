@@ -1,7 +1,7 @@
 jtype: Flow
 version: '1'
 with:
-  protocal: http
+  protocol: http
   port_expose: 45678
 executors:
   - name: 'segmenter'
