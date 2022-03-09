@@ -1,8 +1,7 @@
 from jina import Flow
 from docarray import DocumentArray
-import os
+from pathlib import path
 import sys
-import logging
 
 def check_query(resp):
     for d in resp.docs:
@@ -11,12 +10,10 @@ def check_query(resp):
             print(f'+- {m.uri}: {m.scores["cosine"].value:.6f}, {m.tags}')
 
 def main():
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    workspace = os.path.join(cur_dir, 'workspace')
-    logger = logging.getLogger('audio-search')
+    workspace = Path(__file__).parent.absolute() / 'workspace'
     docs = DocumentArray.from_files('toy-data/*.mp3')
-    if os.path.exists(workspace):
-            logger.error(
+    if workspace.exists():
+            print(
                 f'\n +------------------------------------------------------------------------------------+ \
                     \n |                                   🤖🤖🤖                                           | \
                     \n | The directory {workspace} already exists. Please remove it before indexing again.  | \
